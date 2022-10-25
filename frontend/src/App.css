@@ -1,0 +1,53 @@
+div.pt-2 button{
+    background-color: cadetblue;
+    padding: 4px;
+    color: white;
+    width: 120px;
+    font-size: 18px;
+}
+
+ul.pagination{
+    display: flex;
+    justify-content: space-evenly;
+    font-size: 18px;
+}
+
+li.page-item{
+    background-color: cadetblue;
+    padding: 8px;
+    color: white;
+}
+
+li.page-item:nth-child(2){
+  text-align: center;
+}
+
+li.page-item:nth-child(3){
+    text-align: center;
+  }
+
+  li.page-item:nth-child(4){
+    text-align: center;
+      width: 83px;
+  }
+
+  div.container a:first-child{
+    font-size: 18px;
+    background-color: cadetblue;
+    padding: 8px;
+    color: white;
+  }
+
+  div.panel-body div.row{
+    font-size: 18px;
+  }
+
+  /* div.ql-editor{
+    font-size: 18px;
+  } */
+  div.panel-body{
+      margin-top: 24px;
+  }
+  div.quill{
+    margin-top: 24px;
+  } 
