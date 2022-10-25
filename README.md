@@ -13,3 +13,5 @@ Uploaded Email and nodejs files to the repository
 Updated StaffHomePage files to the repository
 
 Updated cardjs and dashboard files to repository
+
+Created and uploaded FacultyApplication Form.
