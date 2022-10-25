@@ -69,5 +69,28 @@ class HomePage extends React.Component {
             <div style={{fontSize:'24px',fontWeight:'600',width:'100%',display:'flex',padding:'20px',alignItems:'center',color:'#006747'}}>NORTHWEST MISSOURI STATE UNIVERSITY</div>
           </div>
     
-    
-}  
+          <div style={{display:'flex',alignItems:'center'}}>
+      <div style={{display:'flex',alignItems:'center',marginRight:50,fontSize:18}}className='underline cursor-pointer' onClick={this.handleHome}>Home</div>
+        <div style={{display:'flex',alignItems:'center',marginRight:50,fontSize:18}}className='underline cursor-pointer' onClick={this.handleViewApplication}>View Application</div>
+        <div style={{display:'flex',alignItems:'center',marginRight:150,fontSize:18}}className='underline cursor-pointer' onClick={this.handleNewApplication}>Application Form</div>
+        <button style={{ background: '#006747',color: 'white',height: 35,width: 80,alignItems: 'center',borderRadius: 8,
+         marginRight: 20}} onClick={this.handleLogout}>Logout</button>
+      </div>
+    </div>
+ 
+  
+  {/* </div> */}
+  
+     
+      {/* <LeftNavigation isFirstTime={true} handleNewRequest={this.handleNewRequest} handleLogout={this.handleLogout}/> */}
+      <div className="flex flex-col relative w-full" >
+        <img alt="We’re here for you. <b>Day One.</b>" src="https://www.nwmissouri.edu/images/homepage/features/2022/Supportive-Environment-desktop.jpg"/>
+      </div>
+  </div>
+    );
+
+  }
+}
+
+export default withRouter(HomePage);
+
