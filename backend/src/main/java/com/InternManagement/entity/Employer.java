@@ -77,18 +77,7 @@ public class Employer {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	public String getStipend() {
-		return stipend;
-	}
-	public void setStipend(String stipend) {
-		this.stipend = stipend;
-	}
-	public String getStudentId() {
-		return studentId;
-	}
-	public void setStudentId(String studentId) {
-		this.studentId = studentId;
-	}
+
 	private String endDate;
 	 private String role;
 	 private String stipend;
