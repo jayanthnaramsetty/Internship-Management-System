@@ -9,3 +9,5 @@ added application form to the app
 Updated Employer details java file to the repo
 
 Uploaded Email and nodejs files to the repository
+
+Updated StaffHomePage files to the repository
