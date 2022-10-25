@@ -20,4 +20,23 @@ class HomePage extends React.Component {
       } = this.props;
       push("/");
     };
+
+    handleNewApplication = () =>{
+        const {userId} = this.state;
+        const {
+          history: { push },
+        } = this.props;
+        push('/applicationForm');
+    
+      }
+    
+      handleViewApplication = () =>{
+        const {userId} = this.state;
+        const {
+          history: { push },
+        } = this.props;
+        push('/viewApplication');
+    
+      }
+    
 }  
