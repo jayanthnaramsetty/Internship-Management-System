@@ -19,3 +19,5 @@ Created and uploaded FacultyApplication Form.
 Created and uploaded Staff dashbord
 
 Updated Application.java File
+
+Homepage of student module has been built and pushed to repo.
