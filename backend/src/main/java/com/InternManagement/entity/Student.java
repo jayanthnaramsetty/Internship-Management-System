@@ -129,18 +129,7 @@ public class Student {
 	public void setInstructorName(String instructorName) {
 		this.instructorName = instructorName;
 	}
-	public String getInstructorEmailId() {
-		return instructorEmailId;
-	}
-	public void setInstructorEmailId(String instructorEmailId) {
-		this.instructorEmailId = instructorEmailId;
-	}
-	public int getApplicationNumber() {
-		return applicationNumber;
-	}
-	public void setApplicationNumber(int applicationNumber) {
-		this.applicationNumber = applicationNumber;
-	}
+
 	
 
 	
