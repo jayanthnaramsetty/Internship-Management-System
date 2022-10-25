@@ -13,7 +13,32 @@ public class Student {
 	private String studentId;
 	private String emailId;
 	private String phoneNumber;
-
+	private String streetAddress;
+	private String city;
+	private String state;
+	private String zipcode;
+	private String semester;
+	private String department;
+	private String graduateType;
+	private String instructorName;
+	private String instructorEmailId;
+	private int applicationNumber;
+	private Timestamp AppliedDate;
+	private String fileName;
+	
+	
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	public Timestamp getAppliedDate() {
+		return AppliedDate;
+	}
+	public void setAppliedDate(Timestamp appliedDate) {
+		AppliedDate = appliedDate;
+	}
 	public String getUsername() {
 		return username;
 	}
@@ -56,6 +81,67 @@ public class Student {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
+	public String getStreetAddress() {
+		return streetAddress;
+	}
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddress = streetAddress;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getZipcode() {
+		return zipcode;
+	}
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
+	}
+	public String getSemester() {
+		return semester;
+	}
+	public void setSemester(String semester) {
+		this.semester = semester;
+	}
+	public String getDepartment() {
+		return department;
+	}
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+	public String getGraduateType() {
+		return graduateType;
+	}
+	public void setGraduateType(String graduateType) {
+		this.graduateType = graduateType;
+	}
+	public String getInstructorName() {
+		return instructorName;
+	}
+	public void setInstructorName(String instructorName) {
+		this.instructorName = instructorName;
+	}
+	public String getInstructorEmailId() {
+		return instructorEmailId;
+	}
+	public void setInstructorEmailId(String instructorEmailId) {
+		this.instructorEmailId = instructorEmailId;
+	}
+	public int getApplicationNumber() {
+		return applicationNumber;
+	}
+	public void setApplicationNumber(int applicationNumber) {
+		this.applicationNumber = applicationNumber;
+	}
+	
 
 	
 }
