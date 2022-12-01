@@ -1,5 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
+import Button from '@material-ui/core/Button';
 
 import axios from "axios";
 
@@ -34,16 +35,16 @@ class Card extends React.Component {
     this.setState({openCancelDailog:false})
   }
 
-  handleCancelDone = (e) =>{
-    e.stopPropagation();
-    let reqUrl = `http://localhost:8080/projectManagement/cancelProject/${this.props.projectData.projectId}`;
+  handleDeleteApp = (appNumber) =>{
+  
+    let reqUrl = `http://localhost:8080/internManagement/deleteApplication/${appNumber}`;
     axios.delete(reqUrl).then((res) => {
-          this.setState({openCancelDailog:false})
-          console.log("Request Cancelled Successfully")
-          this.props.updateInProjectArray(this.props.projectData);
+          console.log(res.data);
+          this.props.refreshdata();
     })
 
   }
+
 
   handleViewApplicationForm=()=>{
     const {
@@ -51,7 +52,14 @@ class Card extends React.Component {
     } = this.props;
     
     let url=baseUrl+ data.applicationNumber
-    axios.get(url).then((res) => {
+    axios.get(url,
+      {
+          headers: {
+              "Content-type": "multipart/form-data",
+              "parameter":"value",
+              "type":"subtype"
+          },                    
+      }).then((res) => {
       push({
         pathname: '/applicationForm',
         applicationData: res.data,
@@ -70,7 +78,7 @@ class Card extends React.Component {
     const {openCancelDailog} = this.state;
     return (
 
-          <div onClick={this.handleViewApplicationForm} style={{marginTop:30,minWidth:'800px',backgroundColor:'lavender'}} class="flex flex-col p-6 max-h-72  max-w-xs bg-white rounded-lg border border-gray-200 shadow-md mr-4 mb-4 cursor-pointer transition ease-in-out hover:bg-gray-100 duration-300"  >
+          <div  style={{marginTop:30,minWidth:'800px',backgroundColor:'lavender'}} class="flex flex-col p-6 max-h-72  max-w-xs bg-white rounded-lg border border-gray-200 shadow-md mr-4 mb-4 cursor-pointer transition ease-in-out hover:bg-gray-100 duration-300"  >
           <div style={{display:'flex',alignItems:'center',marginBottom:'8px'}}>
             <div class="text-lg font-bold tracking-tight text-gray-900 dark:text-white">Application Number : </div>
           <h5 class=" text-lg ml-2" onClick={this.handleCardClick}>APPNW0000{data.applicationNumber}</h5>
@@ -87,6 +95,27 @@ class Card extends React.Component {
             <div class="text-lg font-bold tracking-tight text-gray-900 dark:text-white">Instructor Comments : </div>
           <h5 class=" text-lg ml-2" onClick={this.handleCardClick}>{data.comments}</h5>
           </div>}
+<div>
+<Button
+        variant="contained"
+        color="primary"
+        size="small"
+        style={{ width: 100,marginTop:16 }}
+        onClick={this.handleViewApplicationForm}
+      >
+        View
+      </Button>
+          <Button
+        variant="contained"
+        color="primary"
+        size="small"
+        style={{ width: 100,marginTop:16,marginLeft:16 }}
+        onClick={()=>this.handleDeleteApp(data.applicationNumber)}
+      >
+        Delete
+      </Button>
+</div>
+          
                 
           {/* <p id='card_desc' class="flex-1 mb-3 font-normal text-gray-700 dark:text-gray-400" onClick={this.handleCardClick}>{projectData.description}</p> */}
           

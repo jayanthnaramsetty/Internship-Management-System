@@ -9,6 +9,8 @@ public class AdminTable {
 	 private String status;
 	 private String instructorName;
 	 private String instructorEmailId;
+	 private String advisorName;
+	 private String advisorEmailId;
 	 private String studentId;
 	 private String department;
 	 private String firstName;
@@ -16,6 +18,47 @@ public class AdminTable {
 	 private String emailId;
 	 private String state;
 	 private String semester;
+	 
+	 private String employerName;
+	 private String employerState;
+	 private String startDate;
+	 private String endDate;
+	public String getEmployerName() {
+		return employerName;
+	}
+	public void setEmployerName(String employerName) {
+		this.employerName = employerName;
+	}
+	public String getEmployerState() {
+		return employerState;
+	}
+	public void setEmployerState(String employerState) {
+		this.employerState = employerState;
+	}
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+	public String getAdvisorName() {
+		return advisorName;
+	}
+	public void setAdvisorName(String advisorName) {
+		this.advisorName = advisorName;
+	}
+	public String getAdvisorEmailId() {
+		return advisorEmailId;
+	}
+	public void setAdvisorEmailId(String advisorEmailId) {
+		this.advisorEmailId = advisorEmailId;
+	}
 	public String getInstructorName() {
 		return instructorName;
 	}

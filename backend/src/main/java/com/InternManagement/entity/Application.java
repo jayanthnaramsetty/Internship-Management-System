@@ -10,10 +10,24 @@ public class Application {
 	 private String studentId;
 	 private String instructorName;
 	 private String instructorMail;
+	 private String advisorName;
+	 private String advisorMail;
 	 private Timestamp appliedDate;
 	 private String userName;
 	 private Student student;
 	 private Employer employer;
+	public String getAdvisorName() {
+		return advisorName;
+	}
+	public void setAdvisorName(String advisorName) {
+		this.advisorName = advisorName;
+	}
+	public String getAdvisorMail() {
+		return advisorMail;
+	}
+	public void setAdvisorMail(String advisorMail) {
+		this.advisorMail = advisorMail;
+	}
 	public Student getStudent() {
 		return student;
 	}

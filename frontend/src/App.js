@@ -11,6 +11,8 @@ import FacultyApplicationForm from "./components/FacultyApplicationForm";
 import AdminHomePage from "./components/AdminHomePage";
 import AdminDashboard from "./components/AdminDashboard";
 import StaffDashboard from "./components/StaffDashboard";
+import FacultySignupPage from "./components/FacultySignupPage";
+import FacultyLoginPage from "./components/FacultyLoginPage";
 
 
 function App() {
@@ -18,7 +20,9 @@ function App() {
     <BrowserRouter>
       <div className="flex flex-col min-h-screen" >
         <Route path="/" component={LoginPage} exact></Route>
+        <Route path="/facultyLogin" component={FacultyLoginPage} exact></Route>
         <Route path="/signup" component={SignupPage}></Route>
+        <Route path="/facultySignup" component={FacultySignupPage}></Route>
         <Route path="/home" component={HomePage}></Route>
         <Route path="/applicationForm" component={ApplicationForm}></Route>
         <Route path="/viewApplication" component={ViewApplication}></Route>

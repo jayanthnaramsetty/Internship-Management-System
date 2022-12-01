@@ -101,26 +101,22 @@ const columns= [
     </strong>
   )
 },
-{ field: 'instructorName', type: 'string', renderHeader: () => (
+{ field: 'instructorName', type: 'string',width: 200, renderHeader: () => (
   <strong>
    <span>Instructor Name</span>
   </strong>
 ) },
-{ field: 'instructorEmailId', type: 'string', renderHeader: () => (
-  <strong>
-   <span>Instructor EmailId</span>
-  </strong>
-) },
+// { field: 'instructorEmailId', type: 'string', renderHeader: () => (
+//   <strong>
+//    <span>Instructor EmailId</span>
+//   </strong>
+// ) },
 { field: 'studentId', type: 'string', renderHeader: () => (
   <strong>
    <span>Student ID</span>
   </strong>
 ) },
-{ field: 'department', type: 'string', renderHeader: () => (
-  <strong>
-   <span>Department</span>
-  </strong>
-) },
+
   { field: 'firstName', type: 'string', width: 200,renderHeader: () => (
     <strong>
      <span>First Name</span>
@@ -131,21 +127,32 @@ const columns= [
      <span>Last Name</span>
     </strong>
   ) },
-  { field: 'emailId', type: 'string',width: 200, renderHeader: () => (
+  { field: 'department', type: 'string', renderHeader: () => (
     <strong>
-     <span>Email ID</span>
+     <span>Department</span>
     </strong>
   ) },
-  { field: 'state', type: 'string', renderHeader: () => (
+  { field: 'employerName', type: 'string',width: 200, renderHeader: () => (
     <strong>
-     <span>State</span>
+     <span>Employer Name</span>
     </strong>
   ) },
-  { field: 'semester', type: 'string', renderHeader: () => (
+  { field: 'startDate', type: 'string',width: 150,renderHeader: () => (
     <strong>
-     <span>Semester</span>
+     <span>Start Date</span>
     </strong>
   ) },
+  { field: 'endDate', type: 'string',width: 150, renderHeader: () => (
+    <strong>
+     <span>End Date</span>
+    </strong>
+  ) },
+  { field: 'employerState', type: 'string', width: 200,renderHeader: () => (
+    <strong>
+     <span>Employer State</span>
+    </strong>
+  ) },
+  
   
 ];
     

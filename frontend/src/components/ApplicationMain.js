@@ -10,7 +10,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import Alert from "@mui/material/Alert";
+import Alert, { alertClasses } from "@mui/material/Alert";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -29,9 +29,12 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import { makeStyles } from '@material-ui/core/styles';
 
 const studentInfoUrl = "http://localhost:8080/internManagement/addStudentDetail";
 const updateStudentInfoUrl = "http://localhost:8080/internManagement/updateStudentDetail";
+const downloadFileUrl= "http://localhost:8080/internManagement/download";
 const current = new Date();
 const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
 
@@ -69,6 +72,7 @@ class ApplicationMain extends React.Component {
       shouldErrorMessageDisplay: false,
       errorMessage:"",
       isEmailError:false,
+      isZipCodeError:false,
       isNumberError:false,
       displayProgress:false,
 
@@ -86,13 +90,17 @@ class ApplicationMain extends React.Component {
       companyErrorMessageDisplay: false,
       companyEmailError:false,
       companyNumberError:false,
-      startDate:props.data&&props.data.Employer!==undefined?props.data.Employer.startDate:new Date('2022-10-05T21:11:54'),
-      endDate:props.data&&props.data.Employer!==undefined?props.data.Employer.endDate:new Date('2022-10-05T21:11:54'),
+      startDate:props.data&&props.data.Employer!==undefined?props.data.Employer.startDate:'2022-11-20',
+      endDate:props.data&&props.data.Employer!==undefined?props.data.Employer.endDate:'2022-12-20',
 
       instructorName:props.data&&props.data.Student!==undefined?props.data.Student.instructorName:"",
       instructorEmailId:props.data&&props.data.Student!==undefined?props.data.Student.instructorEmailId:"",
+      advisorName:props.data&&props.data.Student!==undefined?props.data.Student.advisorName:"",
+      advisorEmailId:props.data&&props.data.Student!==undefined?props.data.Student.advisorEmailId:"",
       instructorAlertDisplay: false,
       instructorEmailError:false,
+      advisorEmailError:false,
+    termsDialog:false
     };
   }
 
@@ -115,7 +123,8 @@ class ApplicationMain extends React.Component {
   }
 
   handleInstructorDetail=()=>{
-    const{instructorName,instructorEmailId,instructorAlertDisplay,instructorEmailError,displayProgress,isEdit}=this.state;
+    const{advisorName,advisorEmailId,advisorEmailError,
+      instructorName,instructorEmailId,instructorAlertDisplay,instructorEmailError,displayProgress,isEdit}=this.state;
 
     return (
       <div className="flex flex-col space-y-5 max-w-md mx-auto my-16 " style={{minWidth:'600px',backgroundColor:'white',padding:'30px',borderRadius:10}}>
@@ -134,9 +143,28 @@ class ApplicationMain extends React.Component {
           required
           id="outlined-email"
           value={instructorEmailId}
-          label="Email ID"
+          label="Instructor Email ID"
           onChange={(e) => this.handleInstructorEmailIdChange(e)}
           helperText={instructorEmailError ?"Invalid Email":''}
+        />
+         <TextField
+          required
+          disabled= {!isEdit}
+          id="outlined-username"
+          value={advisorName}
+          label="Advisor Name"
+          autoComplete="off"
+          onChange={(e) => this.handleAdvisorNameChange(e)}
+        />
+        <TextField
+        disabled= {!isEdit}
+          error={advisorEmailError}
+          required
+          id="outlined-email"
+          value={advisorEmailId}
+          label="Advisor Email ID"
+          onChange={(e) => this.handleAdvisorEmailIdChange(e)}
+          helperText={advisorEmailError ?"Invalid Email":''}
         />
         {instructorAlertDisplay &&
           <Alert severity="error">Field cannot be empty</Alert>
@@ -154,18 +182,25 @@ class ApplicationMain extends React.Component {
   handleInstructorEmailIdChange = (e) => {
     this.setState({ instructorEmailId: e.target.value });
   };
+  handleAdvisorNameChange = (e) => {
+    this.setState({ advisorName: e.target.value });
+  };
+  handleAdvisorEmailIdChange = (e) => {
+    this.setState({ advisorEmailId: e.target.value });
+  };
+
 
   handleInstructorSubmit = () => {
     const { isEdit,firstName,lastName,gender,streetAddress,city,state,zipcode,semester, 
       emailId,phoneNumber,studentId,department,graduateType,instructorName,instructorEmailId,
       companyName,companyEmailId,companyPhoneNumber,companyStreetAddress,companyCity,startDate,endDate,
       companyState,companyZipcode,internDuration,internRole,internStipend,activeStep,applicationStatus,
-      applicationNo,fileNameDisplay,selectedFile,isNew} = this.state;
+      applicationNo,fileNameDisplay,selectedFile,isNew,advisorEmailId,advisorName,advisorEmailError} = this.state;
     const {
       history: { push },
     } = this.props;
     if (
-      instructorName === "" || instructorEmailId===""     
+      instructorName === "" || instructorEmailId==="" ||advisorName===""|| advisorEmailId==="" 
     ) {
       this.setState({ instructorAlertDisplay: true });
       return;
@@ -177,6 +212,15 @@ class ApplicationMain extends React.Component {
       this.setState({instructorEmailError: false});
     }
     if(!isEmailError){
+      return;
+    }
+    const advisorEmailIdError = this.checkEmailError(advisorEmailId);
+    if(!advisorEmailIdError){
+      this.setState({advisorEmailError: true});
+    }else{
+      this.setState({advisorEmailError: false});
+    }
+    if(!advisorEmailIdError){
       return;
     }
 
@@ -213,6 +257,8 @@ class ApplicationMain extends React.Component {
       graduateType:graduateType,
       instructorName:instructorName,
       instructorEmailId:instructorEmailId,
+      advisorName:advisorName,
+      advisorEmailId:advisorEmailId,
       applicationNumber:applicationNo,
       fileName:fileNameDisplay
      }
@@ -334,7 +380,7 @@ class ApplicationMain extends React.Component {
           disabled= {!isEdit}
           id="outlined-username"
           value={companyState}
-          label="State"
+          label="State Code"
           autoComplete="off"
           onChange={(e) => this.handleCompanyStateChange(e)}
         />
@@ -375,9 +421,31 @@ class ApplicationMain extends React.Component {
           autoComplete="off"
           onChange={(e) => this.handleInternStipendChange(e)}
         />
-         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-         {/* <Grid container justifyContent="space-around"> */}
-         <KeyboardDatePicker
+        <TextField
+         disabled= {!isEdit}
+        id="date"
+        onChange={this.handleStartDateChange}
+        label="Start Date"
+        type="date"
+        value={startDate}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+      <TextField
+       disabled= {!isEdit}
+        id="date"
+        onChange={this.handleEndDateChange}
+        label="End Date"
+        type="date"
+        value={endDate}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+         {/* <MuiPickersUtilsProvider utils={DateFnsUtils}> */}
+         
+         {/* <KeyboardDatePicker
           disableToolbar
           disabled= {!isEdit}
           variant="inline"
@@ -390,8 +458,8 @@ class ApplicationMain extends React.Component {
           KeyboardButtonProps={{
             'aria-label': 'change date',
           }}
-        />
-        <KeyboardDatePicker
+        /> */}
+        {/* <KeyboardDatePicker
         disabled= {!isEdit}
           disableToolbar
           variant="inline"
@@ -404,9 +472,9 @@ class ApplicationMain extends React.Component {
           KeyboardButtonProps={{
             'aria-label': 'change date',
           }}
-        />
-        {/* </Grid> */}
-         </MuiPickersUtilsProvider>
+        /> */}
+       
+         {/* </MuiPickersUtilsProvider> */}
         {companyAlertDisplay &&
           <Alert severity="error">Field cannot be empty</Alert>
         }
@@ -415,10 +483,10 @@ class ApplicationMain extends React.Component {
   }
 
   handleStartDateChange= (date) => {
-    this.setState({ startDate: date });
+    this.setState({ startDate: date.target.value });
   };
   handleEndDateChange = (date) => {
-    this.setState({ endDate: date });
+    this.setState({ endDate: date.target.value });
   };
   
   handleCompanyNameChange = (e) => {
@@ -512,10 +580,34 @@ class ApplicationMain extends React.Component {
   };
 
   handleStudentDetail = () =>{
-    const { shouldAlertDisplay,shouldErrorMessageDisplay,errorMessage, isEmailError,isNumberError,
+    const { shouldAlertDisplay,shouldErrorMessageDisplay,errorMessage, isEmailError,isNumberError,isZipCodeError,
       firstName,lastName,gender,streetAddress,city,state,zipcode,semester, 
-      emailId,phoneNumber,studentId,department,graduateType,acceptTerms,isEdit} =
+      emailId,phoneNumber,studentId,department,graduateType,acceptTerms,isEdit,termsDialog} =
       this.state;
+      
+      const longText = `CPT allows international students to work off campus in a paid position if the work involved will satisfy requirements for internship credit. 
+      Students must be enrolled full-time for at least two regular semesters (spring and fall) at Northwest to be eligible for CPT.
+      CPT can be completed for one year, minus one day. Full-time status on CPT for more than one year will eliminate OPT eligibility.
+     
+      CPT can be full-time in the summer, May to August.
+      CPT can only be part-time during the fall and spring semesters (20 hours per week.)
+      Full-time enrollment in class is required during the fall and spring semesters.
+      Students must re-apply who want to complete CPT for more than one semester.
+      
+      Employment can only begin after receiving a Form I-20 with the Designated School Official endorsement.
+      Employment must end on or before the end date specified on the Form I-20. If employment ends prior to the end date, I will notify my DSO.
+      By signing this agreement, I acknowledge that I have read and will comply with the information provided. I understand that failure to comply will result in losing my immigration status and my SEVIS file being terminated.
+      By reading these regulations and signing, you agree to follow the immigration regulations to maintain your immigration status.  As an F-1 international student, you agree to:
+      Pursue a "full course of study" at the school listed on the currently valid Form I-20 during every academic session or semester except during official school breaks, or unless approved under specific exception, in advance, by the P/DSO.
+      Undergraduate students = 12 credits per semester
+      Graduate students = 6 credits per semester
+      Make normal progress towards completing the course of study, by completing studies before the expiration of the program completion date on Form I-20.
+      Keep Form I-20 valid by following proper procedures for an extension of stay.  Refer to the end date on your Form I-20 to ensure you will be graduating on, or before, that end date.  If you will not complete in the time allotted, you will need to request a program extension.
+      Keep Form I-20 valid by following proper procedures for change in education levels or programs of study.  If your current Form I-20 does not have your correct major, consult with a P/DSO.
+      Not work off-campus, unless specifically authorized by a P/DSO.
+      Not work more than 20 hours per week, on-campus, while classes are in session.
+      Report a change of address within 10 days of the change.
+      Abide by the F-1 grace period rules`;
     return (
       <div className="flex flex-col space-y-5 max-w-md mx-auto  " style={{minWidth:'600px',padding:'30px',borderRadius:10}}>
         <TextField
@@ -548,6 +640,7 @@ class ApplicationMain extends React.Component {
         >
           <MenuItem value='Male'>Male</MenuItem>
           <MenuItem value='Female'>Female</MenuItem>
+          <MenuItem value='Others'>Others</MenuItem>
         </Select>
       </FormControl>
 
@@ -608,10 +701,12 @@ class ApplicationMain extends React.Component {
         />
         <TextField
           disabled= {!isEdit}
+          error={isZipCodeError}
           id="outlined-username"
           value={zipcode}
           label="Zip Code"
           autoComplete="off"
+          helperText={isZipCodeError ?"Invalid Zipcode":''}
           onChange={(e) => this.handleZipcodeChange(e)}
         />
         <TextField
@@ -642,22 +737,23 @@ class ApplicationMain extends React.Component {
           onChange={(e) => this.handleGraduateChange(e)}
         >
           <MenuItem value='Under Graduate'>Under Graduate</MenuItem>
-          <MenuItem value='Post Graduate'>Post Graduate</MenuItem>
+          <MenuItem value='Graduate'>Graduate</MenuItem>
         </Select>
       </FormControl>
        
       <div>
         {this.state.fileNameDisplay===null?<div>
-          <div style={{marginBottom:8}}>Upload Offer Letter(Optional)</div>
+          <div style={{marginBottom:8}}>Upload Offer Letter</div>
         <div>
         <input type="file"  disabled= {!isEdit} onChange={this.onFileChange} />
         </div>
         </div>:<div>
         <div style={{marginBottom:8}}>Offer Letter:</div>
-        <div>{this.state.fileNameDisplay}</div>
+        <div style={{cursor:'pointer',color:'darkblue'}}onClick={this.downloadFile}>{this.state.fileNameDisplay}</div>
           </div>}
       </div>
-     {isEdit && <FormControlLabel
+     {isEdit && <div>
+      <FormControlLabel
         control={
           <Checkbox
             checked={acceptTerms}
@@ -666,8 +762,11 @@ class ApplicationMain extends React.Component {
             color="primary"
           />
         }
-        label="I accept terms and conditions"
-      />}
+        label=""
+      />I accept <u style={{cursor:'pointer',color:'darkblue'}} onClick={this.handleTermsDialog}>Terms and Conditions</u>
+      
+     </div>
+      }
       
         {shouldAlertDisplay &&
           <Alert severity="error">Field cannot be empty</Alert>
@@ -675,6 +774,26 @@ class ApplicationMain extends React.Component {
          {shouldErrorMessageDisplay &&
           <Alert severity="error"> {errorMessage} </Alert>
         }
+
+<Dialog
+        // fullScreen={fullScreen}
+        open={termsDialog}
+        onClose={this.handleCloseTermDialog}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">{"Terms and Conditions"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {longText}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          
+          <Button onClick={this.handleCloseTermDialog} color="primary" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
       </div>
     );
   }
@@ -685,6 +804,29 @@ class ApplicationMain extends React.Component {
     this.setState({ selectedFile: event.target.files[0] });
   
   };
+
+  downloadFile=()=>{
+    const{fileNameDisplay}=this.state;
+    const json={
+      fileName:fileNameDisplay
+    }
+   
+    axios.post(downloadFileUrl,json).then(res=>{
+      alert("Go to C:\\OfferLetter to view file");
+    })
+
+  }
+
+  handleTermsDialog=()=>{
+this.setState({
+  termsDialog:true
+})
+  }
+  handleCloseTermDialog=()=>{
+    this.setState({
+      termsDialog:false
+    })
+      }
 
   handleTerms=()=>{
     const{acceptTerms} = this.state;
@@ -762,6 +904,7 @@ class ApplicationMain extends React.Component {
       }
       const isEmailError = this.checkEmailError(emailId);
       const isPhoneError = this.checkPhoneError(phoneNumber);
+      const isZipCodeError = this.checkZipCode(zipcode);
       if(!isEmailError){
         this.setState({isEmailError: true});
       }else{
@@ -772,8 +915,16 @@ class ApplicationMain extends React.Component {
       }else{
         this.setState({isNumberError: false});
       }
+      if(!isZipCodeError){
+        this.setState({isZipCodeError: true});
+      }else{
+        this.setState({isZipCodeError: false});
+      }
   
       if(!isEmailError){
+        return;
+      }
+      if(!isZipCodeError){
         return;
       }
       if(!acceptTerms){
@@ -840,7 +991,8 @@ this.setState({
       const {
         history: { push },
       } = this.props;
-      push("/staffHome");
+      // push("/staffHome");
+      alert('Comments Updated Successfully')
     })
       
   }
@@ -873,6 +1025,11 @@ this.setState({
   checkPhoneError =(number) =>{
     const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
     return re.test(String(number).toLowerCase());
+  }
+
+  checkZipCode =(zipcode) =>{
+    const flag = zipcode.length===5?true:false
+    return flag;
   }
 
 

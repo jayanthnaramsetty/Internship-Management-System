@@ -14,6 +14,43 @@ public class FacultyTable {
 	 private String emailId;
 	 private String state;
 	 private String semester;
+	 
+	 private String companyName;
+	 private String startDate;
+	 private String endDate;
+	 private String employerState;
+	 private String advisorName;
+	 
+	public String getCompanyName() {
+		return companyName;
+	}
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+	public String getEmployerState() {
+		return employerState;
+	}
+	public void setEmployerState(String employerState) {
+		this.employerState = employerState;
+	}
+	public String getAdvisorName() {
+		return advisorName;
+	}
+	public void setAdvisorName(String advisorName) {
+		this.advisorName = advisorName;
+	}
 	public String getId() {
 		return id;
 	}

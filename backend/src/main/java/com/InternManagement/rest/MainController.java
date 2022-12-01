@@ -1,5 +1,7 @@
 package com.InternManagement.rest;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +105,7 @@ public class MainController {
 	}
 	
 	@GetMapping(value = "/getDataByApplication/{applicationNumber}")
-	ResponseEntity<Map> getDataByApplication(@PathVariable(name="applicationNumber")int applicationNumber) throws InterruptedException, ExecutionException{
+	ResponseEntity<Map> getDataByApplication(@PathVariable(name="applicationNumber")int applicationNumber) throws InterruptedException, ExecutionException, FileNotFoundException, IOException{
 		Map resultMap=  applicationService.getDataByApplication(applicationNumber);
 		return  ResponseEntity.ok(resultMap);
 	}
@@ -114,6 +116,19 @@ public class MainController {
         return  ResponseEntity.ok(resultMap);
     }
 	
+	 @PostMapping("/test")
+	 ResponseEntity<Map> upload(@RequestParam("file") MultipartFile multipartFile) {
+//	        logger.info("HIT -/upload | File Name : {}", multipartFile.getOriginalFilename());
+		 Map resultMap = applicationService.upload1(multipartFile);
+		 return  ResponseEntity.ok(resultMap);
+	    }
+
+	    @PostMapping("/download")
+	    ResponseEntity<Map> download(@RequestBody Student student) throws IOException {
+//	        logger.info("HIT -/download | File Name : {}", fileName);
+	    	Map resultMap = applicationService.download1(student.getFileName());
+	        return  ResponseEntity.ok(resultMap);
+	    }
 	@PostMapping("/updateComments/{applicationNumber}")
 	ResponseEntity<Map> updateComments(@RequestBody Application app,@PathVariable(name="applicationNumber")int applicationNumber) {
         Map resultMap = applicationService.updateComments(app.getComments(),applicationNumber);
@@ -137,5 +152,12 @@ public class MainController {
 		Dashboard result=  applicationService.getInternDataByInstructor(instructorName);
 		return  ResponseEntity.ok(result);
 	}
+	
+	@DeleteMapping("/deleteApplication/{applicationNumber}")
+	ResponseEntity<Map> deleteApplication(@PathVariable(name="applicationNumber")int applicationNumber) throws InterruptedException, ExecutionException {
+        Map resultMap = applicationService.deleteApplication(applicationNumber);
+        return  ResponseEntity.ok(resultMap);
+    }
+	
 
 }

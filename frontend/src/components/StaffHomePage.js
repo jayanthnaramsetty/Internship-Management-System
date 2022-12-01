@@ -22,7 +22,7 @@ class StaffHomePage extends React.Component {
   }
 
 
-  componentWillMount() {
+  componentDidMount() {
     let userName=localStorage.getItem("userName")
     var finalurl = url + userName
     axios.get(finalurl).then((res) => {
@@ -134,34 +134,45 @@ const columns= [
    <span>Student ID</span>
   </strong>
 ) },
+{ field: 'firstName', type: 'string', width: 200,renderHeader: () => (
+  <strong>
+   <span>First Name</span>
+  </strong>
+) },
+{ field: 'lastName', type: 'string', width: 200,renderHeader: () => (
+  <strong>
+   <span>Last Name</span>
+  </strong>
+) },
 { field: 'department', type: 'string', renderHeader: () => (
   <strong>
    <span>Department</span>
   </strong>
 ) },
-  { field: 'firstName', type: 'string', width: 200,renderHeader: () => (
+  
+  { field: 'companyName', type: 'string',width: 200, renderHeader: () => (
     <strong>
-     <span>First Name</span>
+     <span>Employer Name</span>
     </strong>
   ) },
-  { field: 'lastName', type: 'string', width: 200,renderHeader: () => (
+  { field: 'startDate', type: 'string', renderHeader: () => (
     <strong>
-     <span>Last Name</span>
+     <span>Start Date</span>
     </strong>
   ) },
-  { field: 'emailId', type: 'string',width: 200, renderHeader: () => (
+  { field: 'endDate', type: 'string', renderHeader: () => (
     <strong>
-     <span>Email ID</span>
+     <span>End Date</span>
     </strong>
   ) },
-  { field: 'state', type: 'string', renderHeader: () => (
+  { field: 'employerState', type: 'string',width: 200, renderHeader: () => (
     <strong>
-     <span>State</span>
+     <span>Employer State</span>
     </strong>
   ) },
-  { field: 'semester', type: 'string', renderHeader: () => (
+  { field: 'advisorName', type: 'string',width: 200, renderHeader: () => (
     <strong>
-     <span>Semester</span>
+     <span>Advisor Name</span>
     </strong>
   ) },
   // { field: 'action',type: 'string', renderHeader: () => (

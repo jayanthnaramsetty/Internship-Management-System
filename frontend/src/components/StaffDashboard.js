@@ -36,7 +36,7 @@ class StaffDashboard extends React.Component {
   }
 
 
-  componentWillMount() {
+  componentDidMount() {
     const url = baseUrl+localStorage.getItem("userName");
     axios.get(url).then((res) => {
       this.setState({
@@ -118,10 +118,10 @@ class StaffDashboard extends React.Component {
 		}
 
     const rows = [
-      { name: 'Total number of interns', count: total },
-      { name: 'Total number of interns Pending', count: pendingCount },
-      { name: 'Total number of interns Approved', count: approvedCount },
-      { name: 'Total number of interns Rejected', count: rejectedCount }
+      { name: 'Total number of interns', count: total , per:'100'},
+      { name: 'Total number of interns Pending', count: pendingCount,per: pendingCountPer },
+      { name: 'Total number of interns Approved', count: approvedCount,per: approvedCountPer },
+      { name: 'Total number of interns Rejected', count: rejectedCount,per: rejectedCountPer }
     ];
 
     const instructoroptions = {
@@ -183,6 +183,7 @@ class StaffDashboard extends React.Component {
               <TableRow>
                 <TableCell>Intern Application</TableCell>
                 <TableCell align="right">Count</TableCell>
+                <TableCell align="right">Percentage %</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -192,6 +193,7 @@ class StaffDashboard extends React.Component {
                     {row.name}
                   </TableCell>
                   <TableCell align="right">{row.count}</TableCell>
+                  <TableCell align="right">{row.per}%</TableCell>
                 </TableRow>
               ))}
             </TableBody>

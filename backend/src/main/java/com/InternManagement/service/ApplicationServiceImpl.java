@@ -72,7 +72,7 @@ public class ApplicationServiceImpl implements ApplicationService{
     
     public static final String applicationCollection="Application";
 
-	private String DOWNLOAD_URL="\"https://firebasestorage.googleapis.com/v0/b/intern-management-system-2087b.appspot.com/o/%s?alt=media\"";
+	private String DOWNLOAD_URL="https://firebasestorage.googleapis.com/v0/b/intern-management-system-2087b.appspot.com/o/%s?alt=media";
 	
 	@Autowired private JavaMailSender javaMailSender;
 	
@@ -113,6 +113,8 @@ public class ApplicationServiceImpl implements ApplicationService{
 	       app.setAppliedDate( application.getStudent().getAppliedDate());
 	       app.setInstructorMail( application.getStudent().getInstructorEmailId());
 	       app.setInstructorName( application.getStudent().getInstructorName());
+	       app.setAdvisorMail( application.getStudent().getAdvisorEmailId());
+	       app.setAdvisorName( application.getStudent().getAdvisorName());
 	       app.setStudentId( application.getStudent().getStudentId());
 	       app.setUserName( application.getStudent().getUsername());
 	       
@@ -208,6 +210,8 @@ public class ApplicationServiceImpl implements ApplicationService{
 				  student.setGraduateType(doc.getString("graduateType"));
 				  student.setInstructorName(doc.getString("instructorName"));
 				  student.setInstructorEmailId(doc.getString("instructorEmailId"));
+				  student.setAdvisorName(doc.getString("advisorName"));
+				  student.setAdvisorEmailId(doc.getString("advisorEmailId"));
 				  student.setStudentId(doc.getString("studentId"));
 				  student.setApplicationNumber(applicationNumber);
 				  student.setFileName(doc.getString("fileName"));
@@ -256,6 +260,8 @@ public class ApplicationServiceImpl implements ApplicationService{
       application.setAppliedDate( application.getStudent().getAppliedDate());
       application.setInstructorMail( application.getStudent().getInstructorEmailId());
       application.setInstructorName( application.getStudent().getInstructorName());
+      application.setAdvisorMail( application.getStudent().getAdvisorEmailId());
+      application.setAdvisorName( application.getStudent().getAdvisorName());
       application.setStudentId( application.getStudent().getStudentId());
       application.setUserName( application.getStudent().getUsername());
         dbFirestore.collection(applicationCollection)
@@ -263,13 +269,15 @@ public class ApplicationServiceImpl implements ApplicationService{
 		 valueMap.put("isSuccess", true);
 		 return valueMap;
 	}
+	
+	
 
 	@Override
 	public Map upload(MultipartFile multipartFile,int applicationNumber) {
 		Map valueMap=new HashMap<>();
 		 try {
 	            String fileName = multipartFile.getOriginalFilename();                        // to get original file name
-//	            fileName = UUID.randomUUID().toString().concat(this.getExtension(fileName));  // to generated random string values for file name. 
+	            fileName = "APP".concat(String.valueOf(applicationNumber)).concat("_").concat(fileName);  // to generated random string values for file name. 
 	            File file = this.convertToFile(multipartFile, fileName); 
 	            this.uploadFile(file, fileName,applicationNumber);  
 	            valueMap.put("isSuccess", true);// to convert multipartFile to File
@@ -283,8 +291,8 @@ public class ApplicationServiceImpl implements ApplicationService{
 	
 	private String uploadFile(File file, String fileName,int applicationNumber) throws IOException {
         BlobId blobId = BlobId.of("intern-management-system-2087b.appspot.com", fileName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
-        Credentials credentials = GoogleCredentials.fromStream(new FileInputStream("D:\\\\Projects\\\\React Projects\\\\Intern Management\\\\backend\\\\src\\\\main\\\\resources\\\\serviceaccount.json"));
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("application/pdf").build();
+        Credentials credentials = GoogleCredentials.fromStream(new FileInputStream("C:\\\\Users\\\\S545442\\\\Documents\\\\serviceaccount.json"));
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
         Firestore dbFirestore = FirestoreClient.getFirestore();
@@ -305,6 +313,52 @@ public class ApplicationServiceImpl implements ApplicationService{
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf("."));
     }
+    
+    @Override
+    public Map upload1(MultipartFile multipartFile) {
+
+        try {
+        	Map result=new HashMap<>();
+            String fileName = multipartFile.getOriginalFilename();                        // to get original file name
+            fileName = UUID.randomUUID().toString().concat(this.getExtension(fileName));  // to generated random string values for file name. 
+
+            File file = this.convertToFile(multipartFile, fileName);                      // to convert multipartFile to File
+            String TEMP_URL = this.uploadFile1(file, fileName);                                   // to get uploaded file link
+            file.delete();    result.put("url", TEMP_URL)      ;                                                     // to delete the copy of uploaded file stored in the project folder
+            return  result;                   // Your customized response
+        } catch (Exception e) {
+            e.printStackTrace();
+           return null;
+        }
+
+    }
+    
+    @Override
+    public Map download1(String fileName) throws IOException {
+        String destFileName = UUID.randomUUID().toString().concat(this.getExtension(fileName));     // to set random strinh for destination file name
+        String destFilePath = "C:\\OfferLetter\\" + fileName;                                    // to set destination file path
+        Map result=new HashMap<>();
+        ////////////////////////////////   Download  ////////////////////////////////////////////////////////////////////////
+        Credentials credentials = GoogleCredentials.fromStream(new FileInputStream("C:\\\\Users\\\\S545442\\\\Documents\\\\serviceaccount.json"));
+        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        Blob blob = storage.get(BlobId.of("intern-management-system-2087b.appspot.com", fileName));
+        blob.downloadTo(Paths.get(destFilePath));
+        result.put("success", true) ;
+        return result;
+    }
+    
+    private String uploadFile1(File file, String fileName) throws IOException {
+    	 BlobId blobId = BlobId.of("intern-management-system-2087b.appspot.com", fileName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("application/pdf").build();
+        Credentials credentials = GoogleCredentials.fromStream(new FileInputStream("C:\\\\Users\\\\S545442\\\\Documents\\\\serviceaccount.json"));
+        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        storage.create(blobInfo, Files.readAllBytes(file.toPath()));
+        return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+    }
+
+   
+
+    
 
 
 	@Override
@@ -331,6 +385,21 @@ public class ApplicationServiceImpl implements ApplicationService{
        			app.setDepartment(studentdoc.getString("department"));
        			app.setSemester(studentdoc.getString("semester"));
        			app.setState(studentdoc.getString("state"));
+       			
+       		
+       			app.setAdvisorName(studentdoc.getString("advisorName"));
+       			
+       		 }
+       		 
+       		 List<QueryDocumentSnapshot> employerDocuments = dbFirestore.collection(employerCollection).whereEqualTo("applicationNumber", app.getApplicationNumber()).get().get().getDocuments();
+       		 for(QueryDocumentSnapshot employeeDoc: employerDocuments) {
+       			
+       			app.setCompanyName(employeeDoc.getString("companyName"));
+       			app.setEmployerState(employeeDoc.getString("state"));
+       			app.setStartDate(employeeDoc.getString("startDate"));
+       			app.setEndDate(employeeDoc.getString("endDate"));
+       			
+       			
        		 }
        		appList.add(app) ;
        	  }
@@ -387,6 +456,7 @@ public class ApplicationServiceImpl implements ApplicationService{
 		List<AdminTable> resultList = new ArrayList();
 		Firestore dbFirestore = FirestoreClient.getFirestore();
 		 List<QueryDocumentSnapshot> studentDocuments = dbFirestore.collection(studentCollection).get().get().getDocuments();
+		
    		 for(QueryDocumentSnapshot studentdoc: studentDocuments) {
    			 AdminTable adminTable=new AdminTable();
    			adminTable.setFirstName(studentdoc.getString("firstName"));
@@ -399,9 +469,20 @@ public class ApplicationServiceImpl implements ApplicationService{
    			adminTable.setId(studentdoc.get("applicationNumber").toString());
    			adminTable.setInstructorName(studentdoc.getString("instructorName"));
    			adminTable.setInstructorEmailId(studentdoc.getString("instructorEmailId"));
+   			adminTable.setAdvisorName(studentdoc.getString("advisorName"));
+   			adminTable.setAdvisorEmailId(studentdoc.getString("advisorEmailId"));
    			adminTable.setStudentId(studentdoc.getString("studentId"));
    			Object appStatus = dbFirestore.collection(applicationCollection).document(String.valueOf(adminTable.getApplicationNumber())).get().get().get("status");
    			adminTable.setStatus(String.valueOf(appStatus));
+   			
+   			List<QueryDocumentSnapshot> employerDocuments = dbFirestore.collection(employerCollection).whereEqualTo("applicationNumber",adminTable.getApplicationNumber()).get().get().getDocuments();
+   			
+   			for(QueryDocumentSnapshot employeeDoc: employerDocuments) {
+      			adminTable.setEmployerName(employeeDoc.getString("companyName"));
+      			adminTable.setEmployerState(employeeDoc.getString("state"));
+      			adminTable.setStartDate(employeeDoc.getString("startDate"));
+      			adminTable.setEndDate(employeeDoc.getString("endDate"));
+      		 }
    			resultList.add(adminTable);
    		 }
    		 return resultList;
@@ -454,5 +535,19 @@ public class ApplicationServiceImpl implements ApplicationService{
          entity.setTotal(total);
          return entity;
 	}
+
+
+	@Override
+	public Map deleteApplication(int applicationNumber) throws InterruptedException, ExecutionException {
+		Map result=new HashMap();
+		Firestore dbFirestore = FirestoreClient.getFirestore();
+		dbFirestore.collection(applicationCollection).document(String.valueOf(applicationNumber)).delete();
+		dbFirestore.collection(employerCollection).document(String.valueOf(applicationNumber)).delete();
+		dbFirestore.collection(studentCollection).document(String.valueOf(applicationNumber)).delete();
+		result.put("success", true);
+		return result;
+	}
+
+
 
 }

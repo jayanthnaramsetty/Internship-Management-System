@@ -102,13 +102,13 @@ class AdminDashboard extends React.Component {
     push('/');
 
   }
-
+  
 
   render() {
     const {userId,userRole,projectDatas,insList,pendingCount,approvedCount,rejectedCount,total,isApiLoading} = this.state;
-    const pendingCountPer = pendingCount/total*100;
-    const approvedCountPer = approvedCount/total*100;
-    const rejectedCountPer = rejectedCount/total*100;
+    const pendingCountPer =  Number((pendingCount/total*100).toFixed(1)); 
+    const approvedCountPer =  Number((approvedCount/total*100).toFixed(1)); 
+    const rejectedCountPer =  Number((rejectedCount/total*100).toFixed(1)); 
     const options = {
 			animationEnabled: true,
 			exportEnabled: true,
@@ -131,10 +131,10 @@ class AdminDashboard extends React.Component {
 		}
 
     const rows = [
-      { name: 'Total number of interns', count: total },
-      { name: 'Total number of interns Pending', count: pendingCount },
-      { name: 'Total number of interns Approved', count: approvedCount },
-      { name: 'Total number of interns Rejected', count: rejectedCount }
+      { name: 'Total number of interns', count: total, per:'100' },
+      { name: 'Total number of interns Pending', count: pendingCount,per:pendingCountPer },
+      { name: 'Total number of interns Approved', count: approvedCount,per:approvedCountPer },
+      { name: 'Total number of interns Rejected', count: rejectedCount,per:rejectedCountPer }
     ];
 
     const instructoroptions = {
@@ -196,6 +196,7 @@ class AdminDashboard extends React.Component {
               <TableRow>
                 <TableCell>Intern Application</TableCell>
                 <TableCell align="right">Count</TableCell>
+                <TableCell align="right">Percentage %</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -205,6 +206,7 @@ class AdminDashboard extends React.Component {
                     {row.name}
                   </TableCell>
                   <TableCell align="right">{row.count}</TableCell>
+                  <TableCell align="right">{row.per}%</TableCell>
                 </TableRow>
               ))}
             </TableBody>

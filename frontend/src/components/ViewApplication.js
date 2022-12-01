@@ -20,6 +20,15 @@ class ViewApplication extends React.Component {
 })
   }
 
+  refreshData=()=>{
+    let url = baseUrl+localStorage.getItem("userName")
+    axios.get(url).then((res) => {
+      this.setState({
+        applicationList:res.data
+      })
+})
+  }
+
   handleLogout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("userRole");
@@ -108,7 +117,7 @@ class ViewApplication extends React.Component {
  <div style={{display:'flex',flexDirection:'column',alignItems:'center',marginTop:50}}>
  {applicationList.map((application,index) => {
           return(
-              <Card  data={application}  key={index} index={index}/>
+              <Card  refreshdata={this.refreshData} data={application}  key={index} index={index}/>
               );
         })}
  </div>
